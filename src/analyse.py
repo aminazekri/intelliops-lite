@@ -1,3 +1,4 @@
+import re
 from src.contrat import Analyse, Evenement
 
 
