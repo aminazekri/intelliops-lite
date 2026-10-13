@@ -53,6 +53,30 @@ class TestAnalyse(unittest.TestCase):
     def test_classer_log(self):
         self.assertEqual(classer(evt("LOG", "MEDIUM")), "MEDIUM")
 
+    def test_analyser_redemarrage(self):
+        e = evt("CONTAINER_RESTART", "HIGH", "OOMKilled restarts=14")
+        a = analyser(e, RUNBOOKS)
+        self.assertEqual(a.criticite, "CRITICAL")
+        self.assertEqual(a.cause_probable, RUNBOOKS["OOMKilled"])
+        self.assertEqual(a.action_recommandee, "Redémarrer backend")
+        self.assertTrue(a.sensible)
+        self.assertEqual(a.sources, ["DOCKER"])
+        self.assertEqual(a.event_id, "EVT-00001")
+        self.assertEqual(e.status, "ANALYSED")
+
+    def test_analyser_vulnerabilite(self):
+        a = analyser(evt("VULNERABILITY", "CRITICAL", "Vulnérabilité CVE-1"), RUNBOOKS)
+        self.assertEqual(a.action_recommandee, "Mettre à jour la dépendance")
+        self.assertEqual(a.criticite, "HIGH")
+        self.assertTrue(a.sensible)
+
+    def test_analyser_log_simple(self):
+        a = analyser(evt("LOG", "LOW", "health check ok"), RUNBOOKS)
+        self.assertEqual(a.cause_probable,
+                         "Cause inconnue : analyse manuelle requise")
+        self.assertEqual(a.action_recommandee, "Consulter les logs")
+        self.assertFalse(a.sensible)
+
 
 if __name__ == "__main__":
     unittest.main()

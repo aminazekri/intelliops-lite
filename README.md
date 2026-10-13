@@ -7,5 +7,6 @@ Notification) qui échangent via un contrat commun (src/contrat.py).
 
 ## Équipe
 
-\- Abderrahmane El Garti : Agent Notification (C)
-
+- Amina Zekri : Agent Extraction (A)
+- Hiba Fakir : Agent Analyse (B)
+- Abderrahmane El Garti : Agent Notification (C)
