@@ -9,8 +9,11 @@ def est_doublon(evt: Evenement, deja_vus: set) -> bool:
     return False
 
 def rechercher_runbook(evt: Evenement, base: dict):
-    raise NotImplementedError
-
+    message = evt.message.lower()
+    for mot_cle, procedure in base.items():
+        if mot_cle.lower() in message:
+            return procedure
+    return None
 
 def classer(evt: Evenement) -> str:
     raise NotImplementedError
