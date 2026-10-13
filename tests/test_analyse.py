@@ -31,6 +31,28 @@ class TestAnalyse(unittest.TestCase):
     def test_runbook_absent(self):
         self.assertIsNone(rechercher_runbook(evt(message="tout va bien"), RUNBOOKS))
 
+    def test_classer_redemarrages(self):
+        e = evt("CONTAINER_RESTART", "HIGH", "OOMKilled restarts=14")
+        self.assertEqual(classer(e), "CRITICAL")
+
+
+    def test_classer_redemarrages_seuil(self):
+        e = evt("CONTAINER_RESTART", "HIGH", "OOMKilled restarts=10")
+        self.assertEqual(classer(e), "CRITICAL")
+
+    def test_classer_redemarrages_faibles(self):
+        e = evt("CONTAINER_RESTART", "HIGH", "OOMKilled restarts=9")
+        self.assertEqual(classer(e), "MEDIUM")
+
+    def test_classer_vulnerabilite_critique(self):
+        self.assertEqual(classer(evt("VULNERABILITY", "CRITICAL")), "HIGH")
+
+    def test_classer_vulnerabilite_moyenne(self):
+        self.assertEqual(classer(evt("VULNERABILITY", "MEDIUM")), "MEDIUM")
+
+    def test_classer_log(self):
+        self.assertEqual(classer(evt("LOG", "MEDIUM")), "MEDIUM")
+
 
 if __name__ == "__main__":
     unittest.main()
