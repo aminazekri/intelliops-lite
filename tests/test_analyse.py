@@ -20,6 +20,17 @@ class TestAnalyse(unittest.TestCase):
         self.assertFalse(est_doublon(evt(message="a"), vus))
         self.assertFalse(est_doublon(evt(message="b"), vus))
 
+    def test_runbook_trouve(self):
+        e = evt(message="Conteneur oomkilled sur db-02")
+        self.assertEqual(rechercher_runbook(e, RUNBOOKS), RUNBOOKS["OOMKilled"])
+
+    def test_runbook_premier_mot_cle(self):
+        e = evt(message="timeout apres OOMKilled")
+        self.assertEqual(rechercher_runbook(e, RUNBOOKS), RUNBOOKS["OOMKilled"])
+
+    def test_runbook_absent(self):
+        self.assertIsNone(rechercher_runbook(evt(message="tout va bien"), RUNBOOKS))
+
 
 if __name__ == "__main__":
     unittest.main()
