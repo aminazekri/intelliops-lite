@@ -22,8 +22,18 @@ def rediger(evt: Evenement, analyse: Analyse) -> str:
 
 
 def notifier(evt: Evenement, analyse: Analyse, journal: list) -> Notification:
-    raise NotImplementedError
+    resultat = Notification(
+        event_id=evt.id,
+        canal=choisir_canal(analyse.criticite),
+        destinataire="equipe-ops",
+        message=rediger(evt, analyse),
+    )
+    journal.append(resultat)
+    evt.status = "NOTIFIED"
+    return resultat
 
 
 def demander_validation(analyse: Analyse, reponse: str) -> bool:
-    raise NotImplementedError
+    if not analyse.sensible:
+        return True
+    return "".join(reponse.split()).lower() in ("o", "oui", "y", "yes")
